@@ -1,15 +1,45 @@
 import { createPortal } from 'react-dom';
-import css from './Modal.module.css';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Overlay, StyledModal, StyledImg } from './Modal.styled';
 
-const modalRoot = document.querySelector('#modal-root');
+const modalRoot = document.querySelector('#modal');
 
-export const Modal = ({ src, alt, onClick }) => {
-  return createPortal(
-    <div className={css.Overlay} onClick={onClick}>
-      <div className={css.Modal}>
-        <img src={src} alt={alt} />
-      </div>
-    </div>,
-    modalRoot
-  );
-};
+class Modal extends Component {
+  static propTypes = {
+    modalData: PropTypes.shape({
+      largeImageURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+    }),
+    onModalClose: PropTypes.func,
+  };
+
+  handleCloseModal = e => {
+    e.preventDefault();
+    if (e.target === e.currentTarget || e.code === 'Escape') {
+      this.props.onModalClose();
+    }
+  };
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleCloseModal);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleCloseModal);
+  }
+
+  render() {
+    const { largeImageURL, tags } = this.props.modalData;
+    return createPortal(
+      <Overlay onClick={this.handleCloseModal}>
+        <StyledModal>
+          <StyledImg src={largeImageURL} alt={tags}></StyledImg>
+        </StyledModal>
+      </Overlay>,
+      modalRoot
+    );
+  }
+}
+
+export default Modal;

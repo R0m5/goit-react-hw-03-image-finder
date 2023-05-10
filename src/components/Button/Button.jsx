@@ -1,9 +1,12 @@
-import css from './Button.module.css';
+import { StyledBtn } from './Button.styled';
+import PropTypes from 'prop-types';
 
-export const Button = ({ onClick }) => {
-  return (
-    <button type="button" className={css.Button} onClick={onClick}>
-      Load More
-    </button>
-  );
+function Button({ onClick }) {
+  return <StyledBtn onClick={onClick}>Load more</StyledBtn>;
+}
+
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };
+
+export default Button;
